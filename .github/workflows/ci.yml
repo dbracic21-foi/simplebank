@@ -38,7 +38,10 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install go-migrate
-        run: curl -L https://github.com/golang-migrate/migrate/releases/download/$version/migrate.$os-$arch.tar.gz | tar xvz
+        run: |
+          curl -L https://github.com/golang-migrate/migrate/releases/download/v4.16.2/migrate.linux-amd64.tar.gz | tar xvz
+          sudo mv migrate /usr/bin
+          which migrate     
 
       - name: Run migration
         run: make migrateup
