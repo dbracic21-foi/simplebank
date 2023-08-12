@@ -4,10 +4,11 @@ import (
 	"database/sql"
 	"log"
 
+	"github.com/dbracic21-foi/simplebank/api"
+	db "github.com/dbracic21-foi/simplebank/db/sqlc"
+	"github.com/dbracic21-foi/simplebank/util"
+	_ "github.com/golang/mock/mockgen/model"
 	_ "github.com/lib/pq" // Import the PostgreSQL driver package
-	"github.com/techschool/simplebank/api"
-	db "github.com/techschool/simplebank/db/sqlc"
-	"github.com/techschool/simplebank/util"
 )
 
 func main() {
