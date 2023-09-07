@@ -11,7 +11,7 @@ func TestPassword(t *testing.T) {
 
 	password := RadnomString(6)
 
-	hashedPassword, err := hashPassword(password)
+	hashedPassword, err := HashPassword(password)
 	require.NoError(t, err)
 	require.NotEmpty(t, hashedPassword)
 
