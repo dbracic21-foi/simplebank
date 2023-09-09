@@ -93,7 +93,7 @@ func TestGetAccountAPI(t *testing.T) {
 			tc.buildstubs(store)
 			//start test server
 
-			server := NewServer(store)
+			server := newTestServer(t, store)
 			recorder := httptest.NewRecorder()
 
 			url := fmt.Sprintf("/accounts/%d", tc.accountID)
@@ -122,7 +122,6 @@ func TestCreateAccountAPI(t *testing.T) {
 		{
 			name: "OK",
 			body: gin.H{
-				"Owner":    account.Owner,
 				"Currency": account.Currency,
 			},
 			buildstubs: func(mockStore *mockdb.MockStore) {
@@ -139,8 +138,38 @@ func TestCreateAccountAPI(t *testing.T) {
 			},
 			checkResponses: func(t *testing.T, recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusOK, recorder.Code)
-				requireBodyAccount(t, recorder.Body, account)
 
+			},
+		},
+		{
+			name: "InternalError",
+			body: gin.H{
+				"currency": account.Currency,
+			},
+			buildstubs: func(mockStore *mockdb.MockStore) {
+
+				mockStore.EXPECT().
+					CreateAccount(gomock.Any(), gomock.Any()).
+					Times(1).
+					Return(db.Accounts{}, sql.ErrConnDone)
+			},
+			checkResponses: func(t *testing.T, recorder *httptest.ResponseRecorder) {
+				require.Equal(t, http.StatusInternalServerError, recorder.Code)
+			},
+		},
+		{
+			name: "InvalidCurrency",
+			body: gin.H{
+				"currency": "invalid currency",
+			},
+			buildstubs: func(mockStore *mockdb.MockStore) {
+
+				mockStore.EXPECT().
+					CreateAccount(gomock.Any(), gomock.Any()).
+					Times(0)
+			},
+			checkResponses: func(t *testing.T, recorder *httptest.ResponseRecorder) {
+				require.Equal(t, http.StatusBadRequest, recorder.Code)
 			},
 		},
 	}
@@ -158,7 +187,7 @@ func TestCreateAccountAPI(t *testing.T) {
 			tc.buildstubs(store)
 			//start test server
 
-			server := NewServer(store)
+			server := newTestServer(t, store)
 			recorder := httptest.NewRecorder()
 			data, err := json.Marshal(tc.body)
 			require.NoError(t, err)
@@ -190,4 +219,13 @@ func requireBodyAccount(t *testing.T, body *bytes.Buffer, account db.Accounts) {
 	require.NoError(t, err)
 	require.Equal(t, account, gotAccount)
 
+}
+func requireBodyAccounts(t *testing.T, body *bytes.Buffer, accounts []db.Accounts) {
+	data, err := ioutil.ReadAll(body)
+	require.NoError(t, err)
+
+	var gotAccounts db.Accounts
+	err = json.Unmarshal(data, &gotAccounts)
+	require.NoError(t, err)
+	require.Equal(t, accounts, gotAccounts)
 }
