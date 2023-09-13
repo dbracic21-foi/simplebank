@@ -122,6 +122,7 @@ func TestCreateAccountAPI(t *testing.T) {
 		{
 			name: "OK",
 			body: gin.H{
+				"Owner":    account.Owner,
 				"Currency": account.Currency,
 			},
 			buildstubs: func(mockStore *mockdb.MockStore) {
@@ -144,6 +145,7 @@ func TestCreateAccountAPI(t *testing.T) {
 		{
 			name: "InternalError",
 			body: gin.H{
+				"owner":    account.Owner,
 				"currency": account.Currency,
 			},
 			buildstubs: func(mockStore *mockdb.MockStore) {
@@ -160,6 +162,7 @@ func TestCreateAccountAPI(t *testing.T) {
 		{
 			name: "InvalidCurrency",
 			body: gin.H{
+				"owner":    account.Owner,
 				"currency": "invalid currency",
 			},
 			buildstubs: func(mockStore *mockdb.MockStore) {
