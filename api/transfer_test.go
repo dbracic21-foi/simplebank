@@ -24,9 +24,9 @@ func TestTransferAPI(t *testing.T) {
 	account4 := randomAccount()
 
 	account1.Currency = util.USD
-	account2.Currency = util.EUR
+	account2.Currency = util.USD
 	account3.Currency = util.CAD
-	account4.Currency = util.HRK
+	account4.Currency = util.USD
 
 	testCases := []struct {
 		name           string
@@ -66,7 +66,7 @@ func TestTransferAPI(t *testing.T) {
 				"currency":        util.USD,
 			},
 			buildstubs: func(store *mockdb.MockStore) {
-				store.EXPECT().GetAccounts(gomock.Any(), gomock.Eq(account1.ID)).Times(1).Return(db.Accounts{}, sql.ErrConnDone)
+				store.EXPECT().GetAccounts(gomock.Any(), gomock.Eq(account1.ID)).Times(1).Return(db.Accounts{}, sql.ErrNoRows)
 				store.EXPECT().GetAccounts(gomock.Any(), gomock.Eq(account2.ID)).Times(0)
 				store.EXPECT().TransfersTx(gomock.Any(), gomock.Any()).Times(0)
 			},
@@ -83,8 +83,8 @@ func TestTransferAPI(t *testing.T) {
 				"currency":        util.USD,
 			},
 			buildstubs: func(store *mockdb.MockStore) {
-				store.EXPECT().GetAccounts(gomock.Any(), gomock.Eq(account1.ID)).Times(0)
-				store.EXPECT().GetAccounts(gomock.Any(), gomock.Eq(account2.ID)).Times(1).Return(db.Accounts{}, sql.ErrConnDone)
+				store.EXPECT().GetAccounts(gomock.Any(), gomock.Eq(account1.ID)).Times(1).Return(account1, nil)
+				store.EXPECT().GetAccounts(gomock.Any(), gomock.Eq(account2.ID)).Times(1).Return(db.Accounts{}, sql.ErrNoRows)
 				store.EXPECT().TransfersTx(gomock.Any(), gomock.Any()).Times(0)
 			},
 			checkResponses: func(recorder *httptest.ResponseRecorder) {
@@ -101,28 +101,28 @@ func TestTransferAPI(t *testing.T) {
 			},
 			buildstubs: func(store *mockdb.MockStore) {
 				store.EXPECT().GetAccounts(gomock.Any(), gomock.Eq(account2.ID)).Times(1).Return(account2, nil)
-				store.EXPECT().GetAccounts(gomock.Any(), gomock.Eq(account2.ID)).Times(0)
+				store.EXPECT().GetAccounts(gomock.Any(), gomock.Eq(account4.ID)).Times(0)
 				store.EXPECT().TransfersTx(gomock.Any(), gomock.Any()).Times(0)
 			},
 			checkResponses: func(recorder *httptest.ResponseRecorder) {
-				require.Equal(t, http.StatusNotFound, recorder.Code)
+				require.Equal(t, http.StatusBadRequest, recorder.Code)
 			},
 		},
 		{
 			name: "ToAccountCurrencyMismatch",
 			body: gin.H{
-				"from_account_id": account4.ID,
+				"from_account_id": account3.ID,
 				"to_account_id":   account2.ID,
 				"amount":          amount,
 				"currency":        util.CAD,
 			},
 			buildstubs: func(store *mockdb.MockStore) {
-				store.EXPECT().GetAccounts(gomock.Any(), gomock.Eq(account4.ID)).Times(1).Return(account4, nil)
+				store.EXPECT().GetAccounts(gomock.Any(), gomock.Eq(account3.ID)).Times(1).Return(account3, nil)
 				store.EXPECT().GetAccounts(gomock.Any(), gomock.Eq(account2.ID)).Times(1).Return(account2, nil)
 				store.EXPECT().TransfersTx(gomock.Any(), gomock.Any()).Times(0)
 			},
 			checkResponses: func(recorder *httptest.ResponseRecorder) {
-				require.Equal(t, http.StatusNotFound, recorder.Code)
+				require.Equal(t, http.StatusBadRequest, recorder.Code)
 			},
 		},
 		{
@@ -180,12 +180,12 @@ func TestTransferAPI(t *testing.T) {
 				"from_account_id": account2.ID,
 				"to_account_id":   account4.ID,
 				"amount":          amount,
-				"currency":        util.EUR,
+				"currency":        util.USD,
 			},
 			buildstubs: func(store *mockdb.MockStore) {
 				store.EXPECT().GetAccounts(gomock.Any(), gomock.Eq(account2.ID)).Times(1).Return(account2, nil)
 				store.EXPECT().GetAccounts(gomock.Any(), gomock.Eq(account4.ID)).Times(1).Return(account4, nil)
-				store.EXPECT().GetAccounts(gomock.Any(), gomock.Any()).Times(1).Return(db.TransferTxResult{}, sql.ErrTxDone)
+				store.EXPECT().TransfersTx(gomock.Any(), gomock.Any()).Times(1).Return(db.TransferTxResult{}, sql.ErrTxDone)
 			},
 			checkResponses: func(recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusInternalServerError, recorder.Code)
