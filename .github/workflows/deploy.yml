@@ -4,50 +4,43 @@
 name: Deploy to a production 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+    branches: [ new-branch-second ]
+  
 
 jobs:
-  test:
-    name: Test
+
+
+  build:
+    name: BUild image
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_PASSWORD: secret
-          POSTGRES_USER: root
-          POSTGRES_DB: simple_bank 
-        ports:
-            # Maps tcp port 5432 on service container to the host
-            - 5433:5432
-  
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+   
     steps:
-      - uses: actions/checkout@v2
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        role-to-assume: arn:aws:iam::123456789012:role/my-github-actions-role
+        aws-region: eu-central-1
 
-      - name: Set up Go 1.x
-        uses: actions/setup-go@v2
-        with:
-          go-version: '1.20'
-        id: go
+    - name: Login to Amazon ECR Private
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+      
 
-      - name: Check out code into the Go module directory
-        uses: actions/checkout@v2
+    - name: Login to Amazon ECR Public
+      id: login-ecr-public
+      uses: aws-actions/amazon-ecr-login@v1
+      with:
+        mask-password: 'true'
+        registry-type: public
 
-      - name: Install go-migrate
-        run: |
-          curl -L https://github.com/golang-migrate/migrate/releases/download/v4.16.2/migrate.linux-amd64.tar.gz | tar xvz
-          sudo mv migrate /usr/bin/migrate
-          which migrate     
-
-      - name: Run migration
-        run: make migrateup
-
-      - name: Test
-        run: make test
+    - name: Build, tag, and push docker image to Amazon ECR Public
+      env:
+        REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
+        REGISTRY_ALIAS: my-ecr-public-registry-alias
+        REPOSITORY: simplebank
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        docker build -t $REGISTRY/$REGISTRY_ALIAS/$REPOSITORY:$IMAGE_TAG .
+        docker push $REGISTRY/$REGISTRY_ALIAS/$REPOSITORY:$IMAGE_TAG   
+      
+    

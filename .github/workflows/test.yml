@@ -5,9 +5,9 @@ name: Run unit tests
 
 on:
   push:
-    branches: [ "new-branch" ]
+    branches: [ new-branch-second ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ new-branch-second ]
 
 jobs:
   test:
