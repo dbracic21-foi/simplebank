@@ -20,6 +20,14 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
         aws-region: eu-central-1
+    - name: Test ECR Permissions
+      run: |
+          aws ecr get-authorization-token
+      env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
+          AWS_DEFAULT_REGION: eu-central-1
+      
 
     - name: Login to Amazon ECR 
       id: login-ecr
@@ -29,7 +37,6 @@ jobs:
     - name: Build, tag, and push docker image to Amazon ECR Public
       env:
         REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        REGISTRY_ALIAS: my-ecr-public-registry-alias
         REPOSITORY: simplebank
         IMAGE_TAG: ${{ github.sha }}
       run: |
