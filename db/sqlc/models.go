@@ -5,6 +5,8 @@ package db
 import (
 	"database/sql"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type Accounts struct {
@@ -21,6 +23,18 @@ type Entries struct {
 	AccountID int64     `json:"account_id"`
 	Amount    int64     `json:"amount"`
 	CreatedAt time.Time `json:"created_at"`
+}
+
+type Sessions struct {
+	ID              uuid.UUID `json:"id"`
+	Username        string    `json:"username"`
+	RefreshToken    string    `json:"refresh_token"`
+	UserAgent       string    `json:"user_agent"`
+	ClientIp        string    `json:"client_ip"`
+	IsEmailVerified bool      `json:"is_email_verified"`
+	IsBlocked       bool      `json:"is_blocked"`
+	ExpiresAt       time.Time `json:"expires_at"`
+	CreatedAt       time.Time `json:"created_at"`
 }
 
 type Transfers struct {
