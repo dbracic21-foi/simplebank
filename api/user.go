@@ -44,6 +44,7 @@ func (server *Server) createUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
+	
 
 	hashedPassword, err := util.HashPassword(req.Password)
 	if err != nil {
