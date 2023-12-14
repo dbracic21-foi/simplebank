@@ -4,6 +4,7 @@ package pb;
 
 import "google/api/annotations.proto";
 import  "rpc_create_user.proto";
+import  "rpc_update_user.proto";
 import  "rpc_login_user.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
@@ -11,7 +12,7 @@ option go_package = "github.com/dbracic21-foi/simplebank/pb";
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   info: {
     title: "Simple Bank API";
-    version: "1.1";
+    version: "1.2";
     contact: {
       name: "Simple Bank";
       url: "https://github.com/dbracic21-foi/simplebank";
@@ -22,7 +23,7 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
 service SimpleBank{
     rpc CreateUser (CreatUserRequest) returns (CreatUserResponse){
         option (google.api.http) = {
-            post: "/v1.1/create_user"
+            post: "/v1/create_user"
             body: "*"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -30,14 +31,24 @@ service SimpleBank{
           summary: "Create new user";
         };
       }
-
-    rpc LoginUser(LoginRequest) returns(LoginResponse){
+      rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse){
         option (google.api.http) = {
-            post: "/v1.1/login_user"
+            patch: "/v1/update_user"
             body: "*"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-          description: "Use this API tto login user and get access token & refresh token";
+          description: "Use this API to updtade a user";
+          summary: "Update a user";
+        };
+      }
+
+    rpc LoginUser(LoginRequest) returns(LoginResponse){
+        option (google.api.http) = {
+            post: "/v1/login_user"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+          description: "Use this API to login user and get access token & refresh token";
           summary: "Login user";
         };
     }
