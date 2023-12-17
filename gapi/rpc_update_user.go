@@ -91,3 +91,4 @@ func validateUpdateUserRequest(req *pb.UpdateUserRequest) (violations []*errdeta
 	}
 	return violations
 }
+ 

@@ -9,8 +9,9 @@ import (
 // Config sotres all config of the aplicaton
 // the values are read by viper from a config file
 type Config struct {
-	DBDRIVER             string        `mapstructure:"DB_DRIVER"`
-	DBSOURCE             string        `mapstructure:"DB_SOURCE"`
+	Environment          string        `mapstructure:"ENVIROMENT"`
+	DBDriver             string        `mapstructure:"DB_DRIVER"`
+	DBSource             string        `mapstructure:"DB_SOURCE"`
 	MigrationURL         string        `mapstructure:"MIGRATION_URL"`
 	HTTPServerAdress     string        `mapstructure:"HTTP_SERVER_ADRESS"`
 	GRPCServerAdress     string        `mapstructure:"GRPC_SERVER_ADRESS"`
