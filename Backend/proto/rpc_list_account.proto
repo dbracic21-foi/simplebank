@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package pb;
+
+import "account.proto";
+
+option go_package = "github.com/dbracic21-foi/simplebank/pb";
+
+message ListAccountsRequest {
+    string owner = 1;
+    int32 page = 2;
+    int32 pageSize = 3;   
+}
+message ListAccountsResponse {
+    repeated Account accounts = 1;
+}

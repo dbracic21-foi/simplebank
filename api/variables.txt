@@ -1,1 +1,0 @@
-DB_SOURCE=postgresql://root:3xx2UXWlG8U5reKVS1VH@simple-bank.co8nvm8yoszt.eu-central-1.rds.amazonaws.com:5432/simple_bank

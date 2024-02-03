@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package pb;
+
+
+option go_package = "github.com/dbracic21-foi/simplebank/pb";
+
+message Transfer {
+    int64 from_account_id = 1;
+    int64 to_account_id = 2;
+    int64 amount = 3;
+    string currency = 4;
+}

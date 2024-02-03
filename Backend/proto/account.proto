@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package pb;
+
+
+option go_package = "github.com/dbracic21-foi/simplebank/pb";
+
+message Account{
+    string owner = 1;
+    string currency = 2;
+    int64 balance = 3;   
+}

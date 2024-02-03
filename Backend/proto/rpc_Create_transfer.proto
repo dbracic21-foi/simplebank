@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package pb;
+
+import "transfer.proto";
+
+option go_package = "github.com/dbracic21-foi/simplebank/pb";
+
+message CreateTransferRequest {
+    int64 from = 1;
+    int64 to = 2;
+    int64 amount = 3;
+    string currency = 4;
+
+}
+message CreateTransferResponse {
+    Transfer transfer = 1;
+}
