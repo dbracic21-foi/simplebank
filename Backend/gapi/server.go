@@ -9,7 +9,6 @@ import (
 	"github.com/dbracic21-foi/simplebank/util"
 )
 
-// Server serves gRPC request
 type Server struct {
 	pb.UnimplementedSimpleBankServer
 	config     util.Config
@@ -17,7 +16,6 @@ type Server struct {
 	tokenMaker token.Maker
 }
 
-// Creates new gRPC request
 func NewServer(config util.Config, store db.Store) (*Server, error) {
 	tokenMaker, err := token.NewPasetoMaker(config.TokenSymetricKey)
 	if err != nil {

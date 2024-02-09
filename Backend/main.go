@@ -74,14 +74,14 @@ func rungRPCServer(config util.Config, store db.Store) {
 	pb.RegisterSimpleBankServer(grpcServer, server)
 	reflection.Register(grpcServer)
 
-	listener, err := net.Listen("tcp", config.GRPCServerAdress)
+	listenerGRPC, err := net.Listen("tcp", config.GRPCServerAdress)
 	if err != nil {
-		log.Fatal().Msg("Cannot start server")
+		log.Fatal().Msg("Cannot start gRPC server")
 	}
-	log.Info().Msgf("start grpc server at %s", listener.Addr().String())
-	err = grpcServer.Serve(listener)
+	log.Info().Msgf("start gRPC server at %s", listenerGRPC.Addr().String())
+	err = grpcServer.Serve(listenerGRPC)
 	if err != nil {
-		log.Fatal().Msg("cannot start grpc server")
+		log.Fatal().Msg("cannot start gRPC server")
 	}
 
 }
@@ -120,15 +120,15 @@ func rungGatewayServer(config util.Config, store db.Store) {
 
 	mux.Handle("/swagger/", swaggerHandler)
 
-	listener, err := net.Listen("tcp", config.HTTPServerAdress)
+	listenerHTTP, err := net.Listen("tcp", config.HTTPServerAdress)
 	if err != nil {
-		log.Fatal().Msg("Cannot create a listener")
+		log.Fatal().Msg("Cannot create a listener for HTTP server")
 	}
-	log.Info().Msgf("start HTTP gateway server at %s", listener.Addr().String())
+	log.Info().Msgf("start HTTP gateway server at %s", listenerHTTP.Addr().String())
 	handler := gapi.HttpLogger(mux)
-	err = http.Serve(listener, handler)
+	err = http.Serve(listenerHTTP, handler)
 	if err != nil {
-		log.Fatal().Msg("cannot start HTTP gateway server : ")
+		log.Fatal().Msg("cannot start HTTP gateway server")
 	}
 
 }
