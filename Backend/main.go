@@ -7,9 +7,11 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/hibiken/asynq"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 
+	worker "github.com/dbracic21-foi/simplebank/Worker"
 	"github.com/dbracic21-foi/simplebank/api"
 	db "github.com/dbracic21-foi/simplebank/db/sqlc"
 	_ "github.com/dbracic21-foi/simplebank/doc/statik"
@@ -46,8 +48,14 @@ func main() {
 	runDBMigration(config.MigrationURL, config.DBSource)
 
 	store := db.NewStore(conn)
-	go rungGatewayServer(config, store)
-	rungRPCServer(config, store)
+
+	redisOpt := asynq.RedisClientOpt{
+		Addr: config.RedisAddress,
+	}
+	taskDistributor := worker.NewRedisTaskDistributor(redisOpt)
+	go runTaskProcessor(redisOpt, store)
+	go rungGatewayServer(config, store, taskDistributor)
+	rungRPCServer(config, store, taskDistributor)
 
 }
 func runDBMigration(migrationURL string, dbSource string) {
@@ -63,9 +71,20 @@ func runDBMigration(migrationURL string, dbSource string) {
 
 }
 
-func rungRPCServer(config util.Config, store db.Store) {
+func runTaskProcessor(redisOpt asynq.RedisClientOpt, store db.Store) {
 
-	server, err := gapi.NewServer(config, store)
+	taskProcessor := worker.NewRedisTaskProcessor(redisOpt, store)
+	log.Info().Msg("start task processor")
+	err := taskProcessor.Start()
+	if err != nil {
+		log.Fatal().Err(err).Msg("cannot start task processor")
+	}
+
+}
+
+func rungRPCServer(config util.Config, store db.Store, taskDistributor worker.TaskDistributor) {
+
+	server, err := gapi.NewServer(config, store, taskDistributor)
 	if err != nil {
 		log.Fatal().Msg("Cannot start server")
 	}
@@ -86,9 +105,9 @@ func rungRPCServer(config util.Config, store db.Store) {
 
 }
 
-func rungGatewayServer(config util.Config, store db.Store) {
+func rungGatewayServer(config util.Config, store db.Store, taskDistributor worker.TaskDistributor) {
 
-	server, err := gapi.NewServer(config, store)
+	server, err := gapi.NewServer(config, store, taskDistributor)
 	if err != nil {
 		log.Fatal().Msg("Cannot start server")
 	}
@@ -143,4 +162,3 @@ func runGinServer(config util.Config, store db.Store) {
 	}
 
 }
-	

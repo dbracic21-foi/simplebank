@@ -13,6 +13,7 @@ type Config struct {
 	DBDriver             string        `mapstructure:"DB_DRIVER"`
 	DBSource             string        `mapstructure:"DB_SOURCE"`
 	MigrationURL         string        `mapstructure:"MIGRATION_URL"`
+	RedisAddress         string        `mapstructure:"REDIS_ADDRESS"`
 	HTTPServerAdress     string        `mapstructure:"HTTP_SERVER_ADRESS"`
 	GRPCServerAdress     string        `mapstructure:"GRPC_SERVER_ADRESS"`
 	TokenSymetricKey     string        `mapstructure:"TOKEN_SYMETRIC_KEY"`
