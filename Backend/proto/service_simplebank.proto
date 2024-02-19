@@ -94,5 +94,5 @@ service SimpleBank{
       description: "Use this API to verify email for new user";
       summary: "Verify email  ";
     };
-}
+  }
 }
