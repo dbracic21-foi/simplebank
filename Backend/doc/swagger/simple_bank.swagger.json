@@ -236,6 +236,40 @@
           "SimpleBank"
         ]
       }
+    },
+    "/v1/verify_emails": {
+      "post": {
+        "summary": "Verify email  ",
+        "description": "Use this API to verify email for new user",
+        "operationId": "SimpleBank_VerifyEmails",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbVerifyEmailsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbVerifyEmailsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "SimpleBank"
+        ]
+      }
     }
   },
   "definitions": {
@@ -442,6 +476,26 @@
         "createdAt": {
           "type": "string",
           "format": "date-time"
+        }
+      }
+    },
+    "pbVerifyEmailsRequest": {
+      "type": "object",
+      "properties": {
+        "emailId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "secretCode": {
+          "type": "string"
+        }
+      }
+    },
+    "pbVerifyEmailsResponse": {
+      "type": "object",
+      "properties": {
+        "isVerifired": {
+          "type": "boolean"
         }
       }
     },

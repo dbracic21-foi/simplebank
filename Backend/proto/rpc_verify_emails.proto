@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package pb;
+
+
+option go_package = "github.com/dbracic21-foi/simplebank/pb";
+
+message VerifyEmailsRequest{
+   int64 email_id = 1;
+   string secret_code = 2;
+
+}
+message VerifyEmailsResponse {
+   bool is_verifired = 1;
+   
+}
+ 
