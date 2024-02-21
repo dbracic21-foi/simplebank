@@ -1,6 +1,6 @@
 -- SQL dump generated using DBML (dbml-lang.org)
 -- Database: PostgreSQL
--- Generated at: 2024-02-16T16:20:11.508Z
+-- Generated at: 2024-02-20T19:16:44.339Z
 
 CREATE TABLE "users" (
   "username" varchar PRIMARY KEY,
@@ -19,7 +19,7 @@ CREATE TABLE "verify_emails" (
   "secret_code" varchar NOT NULL,
   "is_used" bool NOT NULL DEFAULT false,
   "created_at" timestamptz NOT NULL DEFAULT (now()),
-  "expires_at" timestamptz NOT NULL DEFAULT (now() + interval '15 minutes')
+  "expired_at" timestamptz NOT NULL DEFAULT (now() + interval '15 minutes')
 );
 
 CREATE TABLE "accounts" (

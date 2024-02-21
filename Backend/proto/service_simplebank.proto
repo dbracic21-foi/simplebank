@@ -87,8 +87,7 @@ service SimpleBank{
   }
   rpc VerifyEmails(VerifyEmailsRequest) returns(VerifyEmailsResponse){
     option (google.api.http) = {
-        post: "/v1/verify_emails"
-        body: "*"
+        get: "/v1/verify_emails"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       description: "Use this API to verify email for new user";

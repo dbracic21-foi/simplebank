@@ -21,7 +21,7 @@ func (server *Server) VerifyEmails(ctx context.Context, req *pb.VerifyEmailsRequ
 		SecretCode: req.GetSecretCode(),
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "Internal error: ")
+		return nil, status.Errorf(codes.Internal, "Internal error:  %s", err)
 	}
 
 	rsp := &pb.VerifyEmailsResponse{

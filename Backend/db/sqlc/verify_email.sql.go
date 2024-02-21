@@ -14,7 +14,7 @@ INSERT INTO verify_emails (
 username,email, secret_code) 
 VALUES 
 ($1, $2, $3) 
-RETURNING id, username, email, secret_code, is_used, created_at, expires_at
+RETURNING id, username, email, secret_code, is_used, created_at, expired_at
 `
 
 type CreateVerifyEmailParams struct {
@@ -33,7 +33,7 @@ func (q *Queries) CreateVerifyEmail(ctx context.Context, arg CreateVerifyEmailPa
 		&i.SecretCode,
 		&i.IsUsed,
 		&i.CreatedAt,
-		&i.ExpiresAt,
+		&i.ExpiredAt,
 	)
 	return i, err
 }
@@ -46,8 +46,8 @@ WHERE
     id = $1
     AND secret_code = $2
     AND is_used = false
-    AND expred_at > now()
-RETURNING id, username, email, secret_code, is_used, created_at, expires_at
+    AND expired_at > now()
+RETURNING id, username, email, secret_code, is_used, created_at, expired_at
 `
 
 type UpdateVerifyEmailParams struct {
@@ -65,7 +65,7 @@ func (q *Queries) UpdateVerifyEmail(ctx context.Context, arg UpdateVerifyEmailPa
 		&i.SecretCode,
 		&i.IsUsed,
 		&i.CreatedAt,
-		&i.ExpiresAt,
+		&i.ExpiredAt,
 	)
 	return i, err
 }

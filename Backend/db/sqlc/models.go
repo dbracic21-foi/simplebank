@@ -64,5 +64,5 @@ type VerifyEmails struct {
 	SecretCode string    `json:"secret_code"`
 	IsUsed     bool      `json:"is_used"`
 	CreatedAt  time.Time `json:"created_at"`
-	ExpiresAt  time.Time `json:"expires_at"`
+	ExpiredAt  time.Time `json:"expired_at"`
 }

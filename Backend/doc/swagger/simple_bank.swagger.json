@@ -238,7 +238,7 @@
       }
     },
     "/v1/verify_emails": {
-      "post": {
+      "get": {
         "summary": "Verify email  ",
         "description": "Use this API to verify email for new user",
         "operationId": "SimpleBank_VerifyEmails",
@@ -258,12 +258,17 @@
         },
         "parameters": [
           {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/pbVerifyEmailsRequest"
-            }
+            "name": "emailId",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "secretCode",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -476,18 +481,6 @@
         "createdAt": {
           "type": "string",
           "format": "date-time"
-        }
-      }
-    },
-    "pbVerifyEmailsRequest": {
-      "type": "object",
-      "properties": {
-        "emailId": {
-          "type": "string",
-          "format": "int64"
-        },
-        "secretCode": {
-          "type": "string"
         }
       }
     },

@@ -70,6 +70,7 @@ func (processor *RedisTaskProcessor) ProcessTaskVerifyEmail(ctx context.Context,
 		return fmt.Errorf("cannot send email: %w", err)
 
 	}
+
 	log.Info().Str("username", user.Username).Str("email", user.Email).Msg("Email sent")
 	return nil
 }
