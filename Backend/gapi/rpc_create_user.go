@@ -35,7 +35,6 @@ func (server *Server) CreateUser(ctx context.Context, req *pb.CreatUserRequest) 
 			Email:          req.GetEmail(),
 		},
 		AfterCreate: func(user db.Users) error {
-			//TODO USE DB TRANSACTION
 			taskPayload := &worker.PayloadSendVerifyEmail{
 				Username: user.Username,
 			}
