@@ -29,7 +29,7 @@ func TestUpdateUserAPI(t *testing.T) {
 		buildstubs     func(mockStore *mockdb.MockStore)
 		buildContext   func(t *testing.T, tokenMaker token.Maker) context.Context
 		checkResponses func(t *testing.T, res *pb.UpdateUserResponse, err error)
-	}{
+	}{	
 		{
 			name: "OK",
 			req: &pb.UpdateUserRequest{
