@@ -10,7 +10,6 @@ import (
 	"github.com/dbracic21-foi/simplebank/util"
 	"github.com/dbracic21-foi/simplebank/val"
 	"github.com/hibiken/asynq"
-	"github.com/lib/pq"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -50,23 +49,19 @@ func (server *Server) CreateUser(ctx context.Context, req *pb.CreatUserRequest) 
 	txResult, err := server.store.CreateUserTx(ctx, arg)
 
 	if err != nil {
-		if pqerr, ok := err.(*pq.Error); ok {
-			switch pqerr.Code.Name() {
-			case "unique_violation":
-				return nil, status.Errorf(codes.AlreadyExists, "username already exists %s", err)
+		if db.ErrorCode(err) == db.UniqueViolation {
+			return nil, status.Errorf(codes.AlreadyExists, "username already exists %s", err)
 
-			}
 		}
-		return nil, status.Errorf(codes.Internal, "failed to create user %s", err)
-
 	}
+	return nil, status.Errorf(codes.Internal, "failed to create user %s", err)
 
 	rsp := &pb.CreatUserResponse{
 		User: convertUser(txResult.Users),
 	}
 	return rsp, nil
-
 }
+
 func validateCreateUserRequest(req *pb.CreatUserRequest) (violations []*errdetails.BadRequest_FieldViolation) {
 	if err := val.ValidateUsername(req.GetUsername()); err != nil {
 		violations = append(violations, fieldViolation("username", err))
