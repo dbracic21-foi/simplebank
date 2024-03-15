@@ -1,11 +1,12 @@
 package api
 
 import (
-	"database/sql"
+	"errors"
 	"fmt"
 	"net/http"
 	"time"
 
+	db "github.com/dbracic21-foi/simplebank/db/sqlc"
 	"github.com/gin-gonic/gin"
 )
 
@@ -33,7 +34,7 @@ func (server *Server) renewAccessToken(ctx *gin.Context) {
 
 	session, err := server.store.GetSession(ctx, refreshPayload.ID)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, db.ErrRecordNotFound) {
 			ctx.JSON(http.StatusNotFound, errorResponse(err))
 			return
 		}
@@ -56,7 +57,7 @@ func (server *Server) renewAccessToken(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
 		return
 	}
-	if time.Now().After(session.ExpiresAt){
+	if time.Now().After(session.ExpiresAt) {
 		err := fmt.Errorf("expired session ")
 		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
 		return
@@ -70,10 +71,9 @@ func (server *Server) renewAccessToken(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 	}
 
-
 	rsp := renewAccessResponse{
-		AccessToken:           accessToken,
-		AccessTokenExpiresAt:  accesPayload.ExpiredAt,
+		AccessToken:          accessToken,
+		AccessTokenExpiresAt: accesPayload.ExpiredAt,
 	}
 	ctx.JSON(http.StatusOK, rsp)
 

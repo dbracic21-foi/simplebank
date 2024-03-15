@@ -5,19 +5,19 @@
 package db
 
 import (
-	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type Account struct {
-	ID          int64         `json:"id"`
-	Owner       string        `json:"owner"`
-	Balance     int64         `json:"balance"`
-	Currency    string        `json:"currency"`
-	CreatedAt   time.Time     `json:"created_at"`
-	CountryCode sql.NullInt32 `json:"country_code"`
+	ID          int64       `json:"id"`
+	Owner       string      `json:"owner"`
+	Balance     int64       `json:"balance"`
+	Currency    string      `json:"currency"`
+	CreatedAt   time.Time   `json:"created_at"`
+	CountryCode pgtype.Int4 `json:"country_code"`
 }
 
 type Entry struct {

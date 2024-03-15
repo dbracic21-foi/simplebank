@@ -2,7 +2,8 @@ package db
 
 import (
 	"context"
-	"database/sql"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type VerifyEmailsTxParams struct {
@@ -28,7 +29,7 @@ func (store *SQLStore) VerifyEmailsTx(ctx context.Context, arg VerifyEmailsTxPar
 		}
 		result.Users, err = q.UpdateUser(ctx, UpdateUserParams{
 			Username: result.VerifyEmails.Username,
-			IsEmailVerified: sql.NullBool{
+			IsEmailVerified: pgtype.Bool{
 				Bool:  true,
 				Valid: true,
 			},
