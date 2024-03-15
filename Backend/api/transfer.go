@@ -59,7 +59,7 @@ func (server *Server) createTransfer(ctx *gin.Context) {
 
 }
 
-func (server *Server) validAccount(ctx *gin.Context, accountID int64, currency string) (db.Accounts, bool) {
+func (server *Server) validAccount(ctx *gin.Context, accountID int64, currency string) (db.Account, bool) {
 	account, err := server.store.GetAccounts(ctx, accountID)
 
 	if err != nil {

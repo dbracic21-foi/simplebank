@@ -1,4 +1,3 @@
-
 package api
 
 import (
@@ -89,7 +88,7 @@ func TestGetAccountAPI(t *testing.T) {
 				govno.EXPECT().
 					GetAccounts(gomock.Any(), gomock.Eq(account.ID)).
 					Times(1).
-					Return(db.Accounts{}, sql.ErrNoRows)
+					Return(db.Account{}, sql.ErrNoRows)
 			},
 			checkResponses: func(t *testing.T, recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusNotFound, recorder.Code)
@@ -105,7 +104,7 @@ func TestGetAccountAPI(t *testing.T) {
 				mockStore.EXPECT().
 					GetAccounts(gomock.Any(), gomock.Eq(account.ID)).
 					Times(1).
-					Return(db.Accounts{}, sql.ErrConnDone)
+					Return(db.Account{}, sql.ErrConnDone)
 			},
 			checkResponses: func(t *testing.T, recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusInternalServerError, recorder.Code)
@@ -226,7 +225,7 @@ func TestCreateAccountAPI(t *testing.T) {
 				mockStore.EXPECT().
 					CreateAccount(gomock.Any(), gomock.Any()).
 					Times(1).
-					Return(db.Accounts{}, sql.ErrConnDone)
+					Return(db.Account{}, sql.ErrConnDone)
 			},
 			checkResponses: func(t *testing.T, recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusInternalServerError, recorder.Code)
@@ -287,7 +286,7 @@ func TestListAccounts(t *testing.T) {
 	user, _ := randomUser(t)
 	n := 5
 
-	accounts := make([]db.Accounts, n)
+	accounts := make([]db.Account, n)
 	for i := 0; i < n; i++ {
 		accounts[i] = randomAccount(user.Username)
 
@@ -358,7 +357,7 @@ func TestListAccounts(t *testing.T) {
 
 			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().
-					ListAccounts(gomock.Any(), gomock.Any()).Times(1).Return([]db.Accounts{}, sql.ErrConnDone)
+					ListAccounts(gomock.Any(), gomock.Any()).Times(1).Return([]db.Account{}, sql.ErrConnDone)
 
 			},
 			checkResponses: func(recorder *httptest.ResponseRecorder) {
@@ -432,8 +431,8 @@ func TestListAccounts(t *testing.T) {
 
 }
 
-func randomAccount(owner string) db.Accounts {
-	return db.Accounts{
+func randomAccount(owner string) db.Account {
+	return db.Account{
 		ID:       util.RandomInt(1, 1000),
 		Owner:    owner,
 		Currency: util.RandomCurrency(),
@@ -441,21 +440,21 @@ func randomAccount(owner string) db.Accounts {
 	}
 }
 
-func requireBodyAccount(t *testing.T, body *bytes.Buffer, account db.Accounts) {
+func requireBodyAccount(t *testing.T, body *bytes.Buffer, account db.Account) {
 	data, err := ioutil.ReadAll(body)
 	require.NoError(t, err)
 
-	var gotAccount db.Accounts
+	var gotAccount db.Account
 	err = json.Unmarshal(data, &gotAccount)
 	require.NoError(t, err)
 	require.Equal(t, account, gotAccount)
 
 }
-func requireBodyAccounts(t *testing.T, body *bytes.Buffer, accounts []db.Accounts) {
+func requireBodyAccounts(t *testing.T, body *bytes.Buffer, accounts []db.Account) {
 	data, err := ioutil.ReadAll(body)
 	require.NoError(t, err)
 
-	var gotAccounts []db.Accounts
+	var gotAccounts []db.Account
 	err = json.Unmarshal(data, &gotAccounts)
 	require.NoError(t, err)
 	require.Equal(t, accounts, gotAccounts)

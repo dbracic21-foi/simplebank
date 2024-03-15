@@ -5,12 +5,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/require"
-
 	"github.com/dbracic21-foi/simplebank/util"
+	"github.com/stretchr/testify/require"
 )
 
-func createRandomEntry(t *testing.T, accounts Accounts) Entries {
+func createRandomEntry(t *testing.T, accounts Account) Entry {
 
 	arg := CreateEntriesParams{
 		AccountID: accounts.ID,

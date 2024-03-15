@@ -9,11 +9,11 @@ type TransferTxParams struct {
 }
 
 type TransferTxResult struct {
-	Transfers   Transfers `json:"transfers"`
-	FromAccount Accounts  `json:"from_account"`
-	ToAccount   Accounts  `json:"to_account"`
-	FromEntry   Entries   `json:"from_entry"`
-	ToEntry     Entries   `json:"to_entry"`
+	Transfers   Transfer `json:"transfers"`
+	FromAccount Account  `json:"from_account"`
+	ToAccount   Account  `json:"to_account"`
+	FromEntry   Entry    `json:"from_entry"`
+	ToEntry     Entry    `json:"to_entry"`
 }
 
 func (store *SQLStore) TransfersTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error) {
@@ -67,7 +67,7 @@ func AddMoney(
 	ammount1 int64,
 	accountID2 int64,
 	amount2 int64,
-) (account1 Accounts, account2 Accounts, err error) {
+) (account1 Account, account2 Account, err error) {
 
 	account1, err = q.AddAccountsBalance(ctx, AddAccountsBalanceParams{
 		ID:     accountID1,

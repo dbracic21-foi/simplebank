@@ -27,7 +27,7 @@ type userResponse struct {
 	CreatedAt         time.Time `json:"created_at"`
 }
 
-func newUserResponse(user db.Users) userResponse {
+func newUserResponse(user db.User) userResponse {
 	return userResponse{
 		Username:          user.Username,
 		FullName:          user.FullName,

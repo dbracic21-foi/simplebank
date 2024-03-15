@@ -29,7 +29,7 @@ func TestUpdateUserAPI(t *testing.T) {
 		buildstubs     func(mockStore *mockdb.MockStore)
 		buildContext   func(t *testing.T, tokenMaker token.Maker) context.Context
 		checkResponses func(t *testing.T, res *pb.UpdateUserResponse, err error)
-	}{	
+	}{
 		{
 			name: "OK",
 			req: &pb.UpdateUserRequest{
@@ -49,7 +49,7 @@ func TestUpdateUserAPI(t *testing.T) {
 						Valid:  true,
 					},
 				}
-				updateUser := db.Users{
+				updateUser := db.User{
 					Username:          user.Username,
 					HashedPassword:    user.HashedPassword,
 					FullName:          newName,
@@ -91,7 +91,7 @@ func TestUpdateUserAPI(t *testing.T) {
 				store.EXPECT().
 					UpdateUser(gomock.Any(), gomock.Any()).
 					Times(1).
-					Return(db.Users{}, sql.ErrNoRows)
+					Return(db.User{}, sql.ErrNoRows)
 			},
 			buildContext: func(t *testing.T, tokenMaker token.Maker) context.Context {
 				return newContextWithBearerToken(t, tokenMaker, user.Username, time.Minute)

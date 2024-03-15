@@ -34,7 +34,7 @@ func (server *Server) CreateUser(ctx context.Context, req *pb.CreatUserRequest) 
 			FullName:       req.GetFullName(),
 			Email:          req.GetEmail(),
 		},
-		AfterCreate: func(user db.Users) error {
+		AfterCreate: func(user db.User) error {
 			taskPayload := &worker.PayloadSendVerifyEmail{
 				Username: user.Username,
 			}

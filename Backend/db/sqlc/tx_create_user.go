@@ -4,11 +4,11 @@ import "context"
 
 type CreateUserTxParams struct {
 	CreateUserParams
-	AfterCreate func(user Users) error
+	AfterCreate func(user User) error
 }
 
 type CreateUserTxResult struct {
-	Users Users
+	Users User
 }
 
 func (store *SQLStore) CreateUserTx(ctx context.Context, arg CreateUserTxParams) (CreateUserTxResult, error) {

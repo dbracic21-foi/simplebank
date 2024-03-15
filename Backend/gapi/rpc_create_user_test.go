@@ -23,7 +23,7 @@ import (
 type eqCreateUserTxParamsMatcher struct {
 	arg      db.CreateUserTxParams
 	password string
-	user     db.Users
+	user     db.User
 }
 
 func (expected eqCreateUserTxParamsMatcher) Matches(x interface{}) bool {
@@ -50,15 +50,15 @@ func (expected eqCreateUserTxParamsMatcher) Matches(x interface{}) bool {
 func (e eqCreateUserTxParamsMatcher) String() string {
 	return fmt.Sprintf("Matches arg  %v and password  %v", e.arg, e.password)
 }
-func EqCreateUserTxParams(arg db.CreateUserTxParams, password string, user db.Users) gomock.Matcher {
+func EqCreateUserTxParams(arg db.CreateUserTxParams, password string, user db.User) gomock.Matcher {
 	return eqCreateUserTxParamsMatcher{arg, password, user}
 }
-func randomUser(t *testing.T) (user db.Users, password string) {
+func randomUser(t *testing.T) (user db.User, password string) {
 	password = util.RadnomString(6)
 	hashedPassword, err := util.HashPassword(password)
 	require.NoError(t, err)
 
-	user = db.Users{
+	user = db.User{
 		Username:       util.RandomOwner(),
 		HashedPassword: hashedPassword,
 		Email:          util.RandomEmail(),

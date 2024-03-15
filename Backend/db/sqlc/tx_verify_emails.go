@@ -11,8 +11,8 @@ type VerifyEmailsTxParams struct {
 }
 
 type VerifyEmailsTxResult struct {
-	Users        Users
-	VerifyEmails VerifyEmails
+	Users        User
+	VerifyEmails VerifyEmail
 }
 
 func (store *SQLStore) VerifyEmailsTx(ctx context.Context, arg VerifyEmailsTxParams) (VerifyEmailsTxResult, error) {
@@ -26,7 +26,7 @@ func (store *SQLStore) VerifyEmailsTx(ctx context.Context, arg VerifyEmailsTxPar
 		if err != nil {
 			return err
 		}
-		result.Users,err = q.UpdateUser(ctx, UpdateUserParams{
+		result.Users, err = q.UpdateUser(ctx, UpdateUserParams{
 			Username: result.VerifyEmails.Username,
 			IsEmailVerified: sql.NullBool{
 				Bool:  true,

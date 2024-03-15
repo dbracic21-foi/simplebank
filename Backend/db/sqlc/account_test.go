@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func createRandomAccount(t *testing.T) Accounts {
+func createRandomAccount(t *testing.T) Account {
 	user := createRandomUser(t)
 	arg := CreateAccountParams{
 		Owner:    user.Username,
@@ -89,7 +89,7 @@ func TestDeleteAccount(t *testing.T) {
 }
 
 func TestListAccounts(t *testing.T) {
-	var lastAccount Accounts
+	var lastAccount Account
 	for i := 0; i < 10; i++ {
 		lastAccount = createRandomAccount(t)
 	}

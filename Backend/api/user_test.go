@@ -94,7 +94,7 @@ func TestCreateUserAPI(t *testing.T) {
 				store.EXPECT().
 					CreateUser(gomock.Any(), gomock.Any()).
 					Times(1).
-					Return(db.Users{}, sql.ErrConnDone)
+					Return(db.User{}, sql.ErrConnDone)
 			},
 			checkResponses: func(recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusInternalServerError, recorder.Code)
@@ -112,7 +112,7 @@ func TestCreateUserAPI(t *testing.T) {
 				store.EXPECT().
 					CreateUser(gomock.Any(), gomock.Any()).
 					Times(1).
-					Return(db.Users{}, &pq.Error{Code: "23505"})
+					Return(db.User{}, &pq.Error{Code: "23505"})
 			},
 			checkResponses: func(recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusForbidden, recorder.Code)
@@ -234,7 +234,7 @@ func TestLoginUserAPI(t *testing.T) {
 				store.EXPECT().
 					GetUser(gomock.Any(), gomock.Any()).
 					Times(1).
-					Return(db.Users{}, sql.ErrNoRows)
+					Return(db.User{}, sql.ErrNoRows)
 			},
 			checkResponse: func(recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusNotFound, recorder.Code)
@@ -266,7 +266,7 @@ func TestLoginUserAPI(t *testing.T) {
 				store.EXPECT().
 					GetUser(gomock.Any(), gomock.Any()).
 					Times(1).
-					Return(db.Users{}, sql.ErrConnDone)
+					Return(db.User{}, sql.ErrConnDone)
 			},
 			checkResponse: func(recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusInternalServerError, recorder.Code)
@@ -316,12 +316,12 @@ func TestLoginUserAPI(t *testing.T) {
 	}
 }
 
-func randomUser(t *testing.T) (user db.Users, password string) {
+func randomUser(t *testing.T) (user db.User, password string) {
 	password = util.RadnomString(6)
 	hashedPassword, err := util.HashPassword(password)
 	require.NoError(t, err)
 
-	user = db.Users{
+	user = db.User{
 		Username:       util.RandomOwner(),
 		HashedPassword: hashedPassword,
 		Email:          util.RandomEmail(),
@@ -330,11 +330,11 @@ func randomUser(t *testing.T) (user db.Users, password string) {
 	return
 }
 
-func requireBodyMatchUser(t *testing.T, body *bytes.Buffer, user db.Users) {
+func requireBodyMatchUser(t *testing.T, body *bytes.Buffer, user db.User) {
 	data, err := io.ReadAll(body)
 	require.NoError(t, err)
 
-	var gotUser db.Users
+	var gotUser db.User
 	err = json.Unmarshal(data, &gotUser)
 	require.NoError(t, err)
 	require.Equal(t, user.Username, gotUser.Username)
