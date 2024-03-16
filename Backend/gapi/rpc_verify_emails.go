@@ -25,7 +25,7 @@ func (server *Server) VerifyEmails(ctx context.Context, req *pb.VerifyEmailsRequ
 	}
 
 	rsp := &pb.VerifyEmailsResponse{
-		IsVerifired: txResult.Users.IsEmailVerified,
+		IsVerified: txResult.Users.IsEmailVerified,
 	}
 	return rsp, nil
 

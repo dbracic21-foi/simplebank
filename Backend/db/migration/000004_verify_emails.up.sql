@@ -8,3 +8,4 @@ CREATE TABLE "verify_emails" (
   "expired_at" timestamptz NOT NULL DEFAULT (now() + interval '15 minutes')
 );
 ALTER TABLE "verify_emails" ADD FOREIGN KEY ("username") REFERENCES "users" ("username");
+--ALTER TABLE "users" ADD COLUMN "is_email_verified" bool NOT NULL DEFAULT false;
