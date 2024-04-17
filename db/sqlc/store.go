@@ -11,6 +11,8 @@ type Store interface {
 	TransfersTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error)
 	CreateUserTx(ctx context.Context, arg CreateUserTxParams) (CreateUserTxResult, error)
 	VerifyEmailsTx(ctx context.Context, arg VerifyEmailsTxParams) (VerifyEmailsTxResult, error)
+	CreateAccountTx(ctx context.Context, arg CreateAccountTxParams) (CreateAccountTxResult, error)
+	ListAccountsTx(ctx context.Context, arg ListAccountsTxParams) (ListAccountsTxResult, error)
 }
 
 type SQLStore struct {

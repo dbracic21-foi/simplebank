@@ -66,6 +66,21 @@ func (mr *MockStoreMockRecorder) CreateAccount(arg0, arg1 interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateAccount", reflect.TypeOf((*MockStore)(nil).CreateAccount), arg0, arg1)
 }
 
+// CreateAccountTx mocks base method.
+func (m *MockStore) CreateAccountTx(arg0 context.Context, arg1 db.CreateAccountTxParams) (db.CreateAccountTxResult, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateAccountTx", arg0, arg1)
+	ret0, _ := ret[0].(db.CreateAccountTxResult)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateAccountTx indicates an expected call of CreateAccountTx.
+func (mr *MockStoreMockRecorder) CreateAccountTx(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateAccountTx", reflect.TypeOf((*MockStore)(nil).CreateAccountTx), arg0, arg1)
+}
+
 // CreateEntries mocks base method.
 func (m *MockStore) CreateEntries(arg0 context.Context, arg1 db.CreateEntriesParams) (db.Entry, error) {
 	m.ctrl.T.Helper()
@@ -273,6 +288,21 @@ func (m *MockStore) ListAccounts(arg0 context.Context, arg1 db.ListAccountsParam
 func (mr *MockStoreMockRecorder) ListAccounts(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAccounts", reflect.TypeOf((*MockStore)(nil).ListAccounts), arg0, arg1)
+}
+
+// ListAccountsTx mocks base method.
+func (m *MockStore) ListAccountsTx(arg0 context.Context, arg1 db.ListAccountsTxParams) (db.ListAccountsTxResult, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListAccountsTx", arg0, arg1)
+	ret0, _ := ret[0].(db.ListAccountsTxResult)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListAccountsTx indicates an expected call of ListAccountsTx.
+func (mr *MockStoreMockRecorder) ListAccountsTx(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAccountsTx", reflect.TypeOf((*MockStore)(nil).ListAccountsTx), arg0, arg1)
 }
 
 // ListEntries mocks base method.
