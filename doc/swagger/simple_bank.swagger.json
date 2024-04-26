@@ -127,7 +127,7 @@
       "get": {
         "summary": "List all accounts",
         "description": "Use this API to list all accounts",
-        "operationId": "SimpleBank_ListAccount",
+        "operationId": "SimpleBank_ListAccounts",
         "responses": {
           "200": {
             "description": "A successful response.",

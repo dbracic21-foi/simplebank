@@ -33,7 +33,7 @@ import (
 func main() {
 	config, err := util.LoadConfig(".")
 	if err != nil {
-		log.Fatal().Msg("Cannot load config:")
+		log.Fatal().Err(err).Msg("Cannot load config:")
 
 	}
 	if config.Environment == "development" {

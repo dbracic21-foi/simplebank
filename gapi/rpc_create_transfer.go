@@ -10,12 +10,12 @@ import (
 )
 
 func (server *Server) CreateTransfer(ctx context.Context, req *pb.CreateTransferRequest) (*pb.CreateTransferResponse, error) {
+
 	arg := db.CreateTransfersParams{
 		FromAccountID: req.GetFrom(),
 		ToAccountID:   req.GetTo(),
 		Amount:        req.GetAmount(),
 	}
-	
 
 	transfer, err := server.store.CreateTransfers(ctx, arg)
 

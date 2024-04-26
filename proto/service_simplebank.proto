@@ -66,7 +66,7 @@ service SimpleBank{
           summary: "Create new account";
         };
     }
-    rpc ListAccount(ListAccountsRequest) returns(ListAccountsResponse){
+    rpc ListAccounts(ListAccountsRequest) returns(ListAccountsResponse){
       option (google.api.http) = {
           get: "/v1/list_accounts"
       };

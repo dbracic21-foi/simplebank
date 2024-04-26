@@ -23,7 +23,7 @@ const (
 	SimpleBank_UpdateUser_FullMethodName     = "/pb.SimpleBank/UpdateUser"
 	SimpleBank_LoginUser_FullMethodName      = "/pb.SimpleBank/LoginUser"
 	SimpleBank_CreateAccount_FullMethodName  = "/pb.SimpleBank/CreateAccount"
-	SimpleBank_ListAccount_FullMethodName    = "/pb.SimpleBank/ListAccount"
+	SimpleBank_ListAccounts_FullMethodName   = "/pb.SimpleBank/ListAccounts"
 	SimpleBank_CreateTransfer_FullMethodName = "/pb.SimpleBank/CreateTransfer"
 	SimpleBank_VerifyEmails_FullMethodName   = "/pb.SimpleBank/VerifyEmails"
 )
@@ -36,7 +36,7 @@ type SimpleBankClient interface {
 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserResponse, error)
 	LoginUser(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	CreateAccount(ctx context.Context, in *CreateAccountRequest, opts ...grpc.CallOption) (*CreateAccountResponse, error)
-	ListAccount(ctx context.Context, in *ListAccountsRequest, opts ...grpc.CallOption) (*ListAccountsResponse, error)
+	ListAccounts(ctx context.Context, in *ListAccountsRequest, opts ...grpc.CallOption) (*ListAccountsResponse, error)
 	CreateTransfer(ctx context.Context, in *CreateTransferRequest, opts ...grpc.CallOption) (*CreateTransferResponse, error)
 	VerifyEmails(ctx context.Context, in *VerifyEmailsRequest, opts ...grpc.CallOption) (*VerifyEmailsResponse, error)
 }
@@ -85,9 +85,9 @@ func (c *simpleBankClient) CreateAccount(ctx context.Context, in *CreateAccountR
 	return out, nil
 }
 
-func (c *simpleBankClient) ListAccount(ctx context.Context, in *ListAccountsRequest, opts ...grpc.CallOption) (*ListAccountsResponse, error) {
+func (c *simpleBankClient) ListAccounts(ctx context.Context, in *ListAccountsRequest, opts ...grpc.CallOption) (*ListAccountsResponse, error) {
 	out := new(ListAccountsResponse)
-	err := c.cc.Invoke(ctx, SimpleBank_ListAccount_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, SimpleBank_ListAccounts_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -120,7 +120,7 @@ type SimpleBankServer interface {
 	UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserResponse, error)
 	LoginUser(context.Context, *LoginRequest) (*LoginResponse, error)
 	CreateAccount(context.Context, *CreateAccountRequest) (*CreateAccountResponse, error)
-	ListAccount(context.Context, *ListAccountsRequest) (*ListAccountsResponse, error)
+	ListAccounts(context.Context, *ListAccountsRequest) (*ListAccountsResponse, error)
 	CreateTransfer(context.Context, *CreateTransferRequest) (*CreateTransferResponse, error)
 	VerifyEmails(context.Context, *VerifyEmailsRequest) (*VerifyEmailsResponse, error)
 	mustEmbedUnimplementedSimpleBankServer()
@@ -142,8 +142,8 @@ func (UnimplementedSimpleBankServer) LoginUser(context.Context, *LoginRequest) (
 func (UnimplementedSimpleBankServer) CreateAccount(context.Context, *CreateAccountRequest) (*CreateAccountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateAccount not implemented")
 }
-func (UnimplementedSimpleBankServer) ListAccount(context.Context, *ListAccountsRequest) (*ListAccountsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListAccount not implemented")
+func (UnimplementedSimpleBankServer) ListAccounts(context.Context, *ListAccountsRequest) (*ListAccountsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListAccounts not implemented")
 }
 func (UnimplementedSimpleBankServer) CreateTransfer(context.Context, *CreateTransferRequest) (*CreateTransferResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateTransfer not implemented")
@@ -236,20 +236,20 @@ func _SimpleBank_CreateAccount_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
-func _SimpleBank_ListAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _SimpleBank_ListAccounts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListAccountsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SimpleBankServer).ListAccount(ctx, in)
+		return srv.(SimpleBankServer).ListAccounts(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: SimpleBank_ListAccount_FullMethodName,
+		FullMethod: SimpleBank_ListAccounts_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SimpleBankServer).ListAccount(ctx, req.(*ListAccountsRequest))
+		return srv.(SimpleBankServer).ListAccounts(ctx, req.(*ListAccountsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -314,8 +314,8 @@ var SimpleBank_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _SimpleBank_CreateAccount_Handler,
 		},
 		{
-			MethodName: "ListAccount",
-			Handler:    _SimpleBank_ListAccount_Handler,
+			MethodName: "ListAccounts",
+			Handler:    _SimpleBank_ListAccounts_Handler,
 		},
 		{
 			MethodName: "CreateTransfer",

@@ -9,6 +9,7 @@ import (
 	db "github.com/dbracic21-foi/simplebank/db/sqlc"
 	"github.com/dbracic21-foi/simplebank/token"
 	"github.com/gin-gonic/gin"
+	"github.com/rs/zerolog/log"
 )
 
 type createAccountRequest struct {
@@ -38,10 +39,12 @@ func (server *Server) createAccount(ctx *gin.Context) {
 			ctx.JSON(http.StatusForbidden, errorResponse(err))
 			return
 		}
-	}
-	ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 
-	return
+		return
+	}
+	log.Info().Msg("account created successfully")
+
 	ctx.JSON(http.StatusOK, account)
 }
 
