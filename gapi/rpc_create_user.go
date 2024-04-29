@@ -6,7 +6,7 @@ import (
 
 	worker "github.com/dbracic21-foi/simplebank/Worker"
 	db "github.com/dbracic21-foi/simplebank/db/sqlc"
-	"github.com/dbracic21-foi/simplebank/pb"	
+	"github.com/dbracic21-foi/simplebank/pb"
 	"github.com/dbracic21-foi/simplebank/util"
 	"github.com/dbracic21-foi/simplebank/val"
 	"github.com/hibiken/asynq"
@@ -50,12 +50,12 @@ func (server *Server) CreateUser(ctx context.Context, req *pb.CreatUserRequest) 
 
 	if err != nil {
 		if db.ErrorCode(err) == db.UniqueViolation {
-			return nil, status.Errorf(codes.AlreadyExists, "username already exists %s", err)
+			return nil, status.Errorf(codes.AlreadyExists, err.Error())
 
 		}
-	}
-	return nil, status.Errorf(codes.Internal, "failed to create user %s", err)
+		return nil, status.Errorf(codes.Internal, "failed to create user %s", err)
 
+	}
 	rsp := &pb.CreatUserResponse{
 		User: convertUser(txResult.Users),
 	}

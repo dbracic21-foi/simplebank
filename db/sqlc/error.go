@@ -7,13 +7,15 @@ import (
 	"github.com/jackc/pgx/v5/pgconn"
 )
 
-var ErrRecordNotFound = pgx.ErrNoRows
-var ErrUniqueViolation = &pgconn.PgError{Code: UniqueViolation}
-
 const (
 	ForeignKeyViolation = "23503"
 	UniqueViolation     = "23505"
 )
+
+var ErrRecordNotFound = pgx.ErrNoRows
+var ErrUniqueViolation = &pgconn.PgError{
+	Code: UniqueViolation,
+}
 
 func ErrorCode(err error) string {
 	var pgErr *pgconn.PgError

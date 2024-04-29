@@ -16,6 +16,7 @@ func (server *Server) CreateTransfer(ctx context.Context, req *pb.CreateTransfer
 		ToAccountID:   req.GetTo(),
 		Amount:        req.GetAmount(),
 	}
+	currency := req.GetCurrency()
 
 	transfer, err := server.store.CreateTransfers(ctx, arg)
 
@@ -25,6 +26,7 @@ func (server *Server) CreateTransfer(ctx context.Context, req *pb.CreateTransfer
 
 	rsp := &pb.CreateTransferResponse{
 		Transfer: convertTransfers(transfer),
+		Currency: currency,
 	}
 	return rsp, nil
 }

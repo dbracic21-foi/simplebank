@@ -6,7 +6,7 @@ import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/dbracic21-foi/simplebank/pb";
 
-message User{
+message User {
     string username = 1;
     string full_name = 2;
     string email  = 3;

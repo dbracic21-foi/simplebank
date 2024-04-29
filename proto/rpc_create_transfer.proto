@@ -15,4 +15,5 @@ message CreateTransferRequest {
 }
 message CreateTransferResponse {
     Transfer transfer = 1;
+    string Currency = 2;
 }

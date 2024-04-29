@@ -5,6 +5,7 @@ import (
 
 	db "github.com/dbracic21-foi/simplebank/db/sqlc"
 	"github.com/dbracic21-foi/simplebank/mail"
+	"github.com/go-redis/redis/v8"
 	"github.com/hibiken/asynq"
 	"github.com/rs/zerolog/log"
 )
@@ -16,6 +17,7 @@ const (
 
 type TaskProcessor interface {
 	Start() error
+	Shutdown()
 	ProcessTaskVerifyEmail(ctx context.Context, task *asynq.Task) error
 }
 type RedisTaskProcessor struct {
@@ -25,6 +27,8 @@ type RedisTaskProcessor struct {
 }
 
 func NewRedisTaskProcessor(redisOpt asynq.RedisClientOpt, store db.Store, mailer mail.EmailSender) TaskProcessor {
+	logger := NewLogger()
+	redis.SetLogger(logger)
 	server := asynq.NewServer(
 		redisOpt,
 		asynq.Config{
@@ -35,7 +39,7 @@ func NewRedisTaskProcessor(redisOpt asynq.RedisClientOpt, store db.Store, mailer
 			ErrorHandler: asynq.ErrorHandlerFunc(func(ctx context.Context, task *asynq.Task, err error) {
 				log.Error().Err(err).Str("type", task.Type()).Bytes("payload", task.Payload()).Msg("procces task failed")
 			}),
-			Logger: NewLogger(),
+			Logger: logger,
 		},
 	)
 	return &RedisTaskProcessor{
@@ -51,4 +55,8 @@ func (processor *RedisTaskProcessor) Start() error {
 	mux.HandleFunc(TaskSendVerifyEmail, processor.ProcessTaskVerifyEmail)
 
 	return processor.server.Run(mux)
+
+}
+func (processor *RedisTaskProcessor) Shutdown() {
+	processor.server.Shutdown()
 }
