@@ -68,9 +68,9 @@ func main() {
 	taskDistributor := worker.NewRedisTaskDistributor(redisOpt)
 
 	waitGroup, ctx := errgroup.WithContext(ctx)
-	runTaskProcessor(ctx, waitGroup, redisOpt, store, config)
-	rungGatewayServer(ctx, waitGroup, config, store, taskDistributor)
-	rungRPCServer(ctx, config, waitGroup, store, taskDistributor)
+	go runTaskProcessor(ctx, waitGroup, config, redisOpt, store)
+	go rungGatewayServer(ctx, waitGroup, config, store, taskDistributor)
+	rungRPCServer(ctx, waitGroup, config, store, taskDistributor)
 	err = waitGroup.Wait()
 	if err != nil {
 		log.Fatal().Err(err).Msg("error during wait group")
@@ -94,9 +94,9 @@ func runDBMigration(migrationURL string, dbSource string) {
 func runTaskProcessor(
 	ctx context.Context,
 	waitGroup *errgroup.Group,
+	config util.Config,
 	redisOpt asynq.RedisClientOpt,
 	store db.Store,
-	config util.Config,
 
 ) {
 	mailer := mail.NewGmailSender(config.EmailSenderName, config.EmailSenderAddress, config.EmailSenderPassword)
@@ -104,7 +104,7 @@ func runTaskProcessor(
 	log.Info().Msg("start task processor")
 	err := taskProcessor.Start()
 	if err != nil {
-		log.Fatal().Err(err).Msg("cannot start task processor")
+		log.Fatal().Err(err).Msg("failed to  start task processor")
 	}
 	waitGroup.Go(func() error {
 		<-ctx.Done()
@@ -118,8 +118,8 @@ func runTaskProcessor(
 
 func rungRPCServer(
 	ctx context.Context,
-	config util.Config,
 	waitGroup *errgroup.Group,
+	config util.Config,
 	store db.Store,
 	taskDistributor worker.TaskDistributor,
 ) {
@@ -166,12 +166,14 @@ func rungGatewayServer(
 	waitGroup *errgroup.Group,
 	config util.Config,
 	store db.Store,
-	taskDistributor worker.TaskDistributor) {
+	taskDistributor worker.TaskDistributor,
+) {
 
 	server, err := gapi.NewServer(config, store, taskDistributor)
 	if err != nil {
 		log.Fatal().Msg("Cannot start server")
 	}
+
 	jsonOption := runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{
 		MarshalOptions: protojson.MarshalOptions{
 			UseProtoNames: true,
@@ -181,8 +183,8 @@ func rungGatewayServer(
 		},
 	})
 	grpMux := runtime.NewServeMux(jsonOption)
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
+	//ctx, cancel := context.WithCancel(context.Background())
+	//defer cancel()
 
 	err = pb.RegisterSimpleBankHandlerServer(ctx, grpMux, server)
 	if err != nil {
@@ -204,18 +206,19 @@ func rungGatewayServer(
 		Addr:    config.HTTPServerAdress,
 	}
 
-	listenerHTTP, err := net.Listen("tcp", config.HTTPServerAdress)
-	if err != nil {
-		log.Fatal().Msg("Cannot create a listener for HTTP server")
-	}
+	//	listenerHTTP, err := net.Listen("tcp", config.HTTPServerAdress)
+	//	if err != nil {
+	//		log.Fatal().Msg("Cannot create a listener for HTTP server")
+
 	waitGroup.Go(func() error {
-		log.Info().Msgf("start HTTP gateway server at %s", listenerHTTP.Addr().String())
+		log.Info().Msgf("start HTTP gateway server at %s", httpServer.Addr)
 		err = httpServer.ListenAndServe()
 		if err != nil {
 			if errors.Is(err, http.ErrServerClosed) {
 				return nil
 			}
 			log.Error().Err(err).Msg("http server failed to serve")
+			return err
 		}
 		return nil
 	})

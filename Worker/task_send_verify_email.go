@@ -59,10 +59,25 @@ func (processor *RedisTaskProcessor) ProcessTaskVerifyEmail(ctx context.Context,
 
 	}
 	verifyUrl := fmt.Sprintf("http://localhost:8080/v1/verify_emails?email_id=%d&secret_code=%s", verifyEmail.ID, verifyEmail.SecretCode)
-	subject := "Welcome to Simple Bank!"
-	content := fmt.Sprintf(`Hello %s </br>
-	Thank you for register  with us!</br>
-	Please <a href = "%s">click here </a> to verify your email address</br>
+	subject := "Confirm your email adress for Simple Bank!"
+	content := fmt.Sprintf(`<<html>
+	<head>
+	  <style>
+		body { font-family: Arial, sans-serif; line-height: 1.6; }
+		.content { margin: 20px; padding: 20px; border-radius: 10px; background-color: #f4f4f4; }
+		.button { background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; }
+	  </style>
+	</head>
+	<body>
+	  <div class="content">
+		<p>Thank you for registering with us. Please click the link below to verify your email address and activate your account:</p>
+		<a href="%s" class="button">Verify Email</a>
+		<p>If you are having trouble clicking the button, copy and paste the URL below into your web browser:</p>
+		<p>%s</p>
+		<p>Best regards,<br>Simple Bank Team</p>
+	  </div>
+	</body>
+	</html>
 	`, user.FullName, verifyUrl)
 	to := []string{user.Email}
 	err = processor.mailer.SendEmail(subject, content, to, nil, nil, nil)
